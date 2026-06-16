@@ -2,6 +2,12 @@ __pycache__/
 *.pyc
 *.pycache
 
+# 🔐 SENSITIVE - Google Service Account credentials (NEVER commit!)
+credentials.json
+*credentials*.json
+*service_account*.json
+*.key.json
+
 # Generated data files (auto-created by app)
 leads_processed.json
 leads_scored_final.xlsx
