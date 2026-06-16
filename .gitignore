@@ -1,4 +1,28 @@
 __pycache__/
 *.pyc
+*.pycache
+
+# Generated data files (auto-created by app)
 leads_processed.json
+leads_scored_final.xlsx
 temp_export.xlsx
+
+# Raw data (downloaded from Google Sheets - not committed)
+data.csv
+
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+*.env
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store

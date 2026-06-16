@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH = os.path.join(BASE_DIR, "data.csv")
 JSON_PATH = os.path.join(BASE_DIR, "leads_processed.json")
 CRITERIA_PATH = os.path.join(BASE_DIR, "tieu_chi_cham_diem.txt")
+SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/16tCAf_qqtgYZxoumYQKMEOdBhKE0wg5A/export?format=csv&gid=1542775777"
 
 def read_criteria():
     if os.path.exists(CRITERIA_PATH):
@@ -289,6 +290,9 @@ def run_scoring(api_key=None, overwrite=False):
         
     print(f"Successfully processed and saved {len(processed_leads)} leads.")
     return True
+
+# Alias for backward compatibility
+calculate_score = rule_based_score
 
 if __name__ == "__main__":
     # Test local keyword logic
