@@ -61,6 +61,8 @@ The scoring system is implemented as a hybrid engine:
 Make sure Python 3.x and the `xlsxwriter` library are installed.
 
 ### How to Run:
+
+#### Option A: HTML/JS Raw Web Server (Lightweight)
 1. Navigate to the project directory:
    ```powershell
    cd c:\Users\Administrator\Documents\WORK\Software\AI\AGENTIC\Thuchanhb7
@@ -72,11 +74,24 @@ Make sure Python 3.x and the `xlsxwriter` library are installed.
 3. Open your browser and navigate to:
    [http://localhost:8000](http://localhost:8000)
 
+#### Option B: Streamlit Dashboard (Premium Dashboard Interface)
+1. Install requirements:
+   ```powershell
+   pip install -r requirements.txt
+   ```
+2. Run Streamlit app:
+   ```powershell
+   streamlit run streamlit_app.py
+   ```
+3. The dashboard will automatically open in your browser, typically at:
+   [http://localhost:8501](http://localhost:8501)
+
 ### Integrating Gemini AI:
-- In the dashboard, click the **"Chấm điểm lại"** (Recalculate) button.
+- In the dashboard, click the **"Chấm điểm lại"** (Recalculate) button (or use the sidebar config in Streamlit).
 - Paste your **Gemini API Key** into the text input.
 - Click **"Bắt đầu chấm điểm"** (Start Scoring) to run the AI-based analysis.
 - If no key is entered, it automatically falls back to local regex matching.
+
 
 ---
 
