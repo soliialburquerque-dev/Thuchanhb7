@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Lead Scoring & Automation - Real Estate</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons (CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body class="dark-theme">
+    <!-- Animated background gradient blobs -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar or Header -->
+        <header class="app-header glass-panel">
+            <div class="logo-area">
+                <div class="logo-icon-wrap">
+                    <i data-lucide="building-2" class="logo-icon"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>AI Lead Scoring</h1>
+                    <span class="sub-logo">Real Estate Automation System</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="btn-recalculate-modal" class="btn btn-secondary">
+                    <i data-lucide="refresh-cw"></i> Chấm điểm lại
+                </button>
+                <button id="btn-export" class="btn btn-primary">
+                    <i data-lucide="download"></i> Xuất Excel
+                </button>
+            </div>
+        </header>
+
+        <!-- Metrics Row -->
+        <section class="metrics-container">
+            <div class="metric-card glass-panel" data-filter="all">
+                <div class="metric-icon-wrap bg-blue-glow">
+                    <i data-lucide="users"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="stat-total">0</h3>
+                    <p>Tổng Khách Hàng</p>
+                </div>
+            </div>
+            
+            <div class="metric-card glass-panel" data-filter="vip">
+                <div class="metric-icon-wrap bg-green-glow">
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="stat-vip" class="text-vip">0</h3>
+                    <p>Siêu Tiềm Năng (VIP)</p>
+                </div>
+            </div>
+
+            <div class="metric-card glass-panel" data-filter="normal">
+                <div class="metric-icon-wrap bg-yellow-glow">
+                    <i data-lucide="user-check"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="stat-normal" class="text-normal">0</h3>
+                    <p>Khách Tiềm Năng</p>
+                </div>
+            </div>
+
+            <div class="metric-card glass-panel" data-filter="spam">
+                <div class="metric-icon-wrap bg-red-glow">
+                    <i data-lucide="shield-alert"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="stat-spam" class="text-spam">0</h3>
+                    <p>Spam / Không Tiềm Năng</p>
+                </div>
+            </div>
+
+            <div class="metric-card glass-panel" data-filter="reviewed">
+                <div class="metric-icon-wrap bg-purple-glow">
+                    <i data-lucide="clipboard-check"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="stat-reviewed">0</h3>
+                    <p>Đã Kiểm Duyệt</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <main class="main-content glass-panel">
+            <!-- Table Filters and Toolbar -->
+            <div class="table-toolbar">
+                <div class="search-box glass-input-wrap">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Tìm kiếm tên, SĐT, nhu cầu...">
+                </div>
+                <div class="filter-group">
+                    <div class="select-wrapper">
+                        <label for="filter-status">Trạng thái:</label>
+                        <select id="filter-status" class="glass-select">
+                            <option value="all">Tất cả</option>
+                            <option value="vip">VIP (≥ 80đ)</option>
+                            <option value="normal">NORMAL (30-79đ)</option>
+                            <option value="spam">SPAM (< 30đ)</option>
+                        </select>
+                    </div>
+                    <div class="select-wrapper">
+                        <label for="filter-reviewed">Kiểm duyệt:</label>
+                        <select id="filter-reviewed" class="glass-select">
+                            <option value="all">Tất cả</option>
+                            <option value="true">Đã duyệt (Human-in-the-loop)</option>
+                            <option value="false">Chưa duyệt</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leads Table -->
+            <div class="table-container">
+                <table class="leads-table" id="leads-table">
+                    <thead>
+                        <tr>
+                            <th width="60" class="text-center">ID</th>
+                            <th width="180">Khách Hàng</th>
+                            <th width="120" class="text-center">Số Điện Thoại</th>
+                            <th>Nhu Cầu Chi Tiết</th>
+                            <th width="100" class="text-center">Điểm AI</th>
+                            <th width="130" class="text-center">Trạng Thái</th>
+                            <th width="120" class="text-center">Duyệt</th>
+                            <th width="90" class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leads-table-body">
+                        <!-- Loaded dynamically via js -->
+                        <tr>
+                            <td colspan="8" class="text-center loading-placeholder">
+                                <div class="spinner"></div>
+                                <p>Đang tải danh sách khách hàng...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <footer class="table-footer">
+                <div class="pagination-info" id="pagination-info">
+                    Hiển thị 0 - 0 của 0 leads
+                </div>
+                <div class="pagination-controls" id="pagination-controls">
+                    <button class="btn btn-icon btn-secondary" id="btn-prev-page" disabled>
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <span class="page-indicator" id="page-indicator">Trang 1 / 1</span>
+                    <button class="btn btn-icon btn-secondary" id="btn-next-page" disabled>
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Lead Detail Drawer (Slide from right) -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <aside class="drawer glass-panel" id="lead-drawer">
+        <div class="drawer-header">
+            <h2>Chi Tiết Khách Hàng</h2>
+            <button class="btn btn-icon btn-close" id="btn-close-drawer">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="drawer-body" id="drawer-body">
+            <!-- Dynamically populated -->
+        </div>
+        <div class="drawer-footer">
+            <button class="btn btn-secondary" id="btn-cancel-drawer">Hủy</button>
+            <button class="btn btn-primary" id="btn-save-drawer">Lưu Kết Quả</button>
+        </div>
+    </aside>
+
+    <!-- Recalculate / AI Settings Modal -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal glass-panel" id="settings-modal">
+        <div class="modal-header">
+            <h2>Cấu Hình Chấm Điểm AI</h2>
+            <button class="btn btn-icon btn-close" id="btn-close-modal">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-desc">
+                Nhập Gemini API Key để kích hoạt khả năng chấm điểm bằng AI nâng cao. Nếu bỏ trống, hệ thống sẽ sử dụng bộ quy tắc Regex/Từ khóa cục bộ.
+            </p>
+            <div class="form-group">
+                <label for="settings-api-key">Gemini API Key:</label>
+                <div class="input-password-wrap">
+                    <input type="password" id="settings-api-key" placeholder="Nhập API Key của bạn (AIzaSy...)">
+                    <button class="btn-toggle-password" type="button" id="btn-toggle-api-key">
+                        <i data-lucide="eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="settings-overwrite">
+                <label for="settings-overwrite">Ghi đè kết quả đã duyệt thủ công (Human reviewed)</label>
+            </div>
+            <div class="status-box hidden" id="scoring-status">
+                <div class="spinner spinner-small"></div>
+                <span id="scoring-status-text">Đang chạy tiến trình chấm điểm...</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="btn-cancel-modal">Hủy</button>
+            <button class="btn btn-primary" id="btn-run-scoring">Bắt Đầu Chấm Điểm</button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <i data-lucide="check-circle" class="toast-icon" id="toast-icon"></i>
+        <span id="toast-message">Đã lưu thành công!</span>
+    </div>
+
+    <!-- JS code -->
+    <script src="app.js"></script>
+</body>
+</html>
